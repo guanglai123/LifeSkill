@@ -1,0 +1,7 @@
+name: LifeSkill
+version: '${project.version}'
+main: org.guanglai.lifeskill.LifeSkill
+api-version: '1.20'
+commands:
+  lifeskill:
+    description: 生活插件指令
