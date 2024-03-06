@@ -13,9 +13,10 @@ import org.guanglai.lifeskill.LifeSkill;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BackPack extends PluginInventory{
+public class BackPack extends PluginInventory {
 
-    private final int[] collectionSlots = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44};
+    private final int[] collectionSlots = {10, 12, 14, 16, 28, 30, 32, 34};
+    private final int[] glassSlots = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 13, 15, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 29, 31, 33, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44};
 
     public BackPack(Player player) {
         super(player);
@@ -36,6 +37,11 @@ public class BackPack extends PluginInventory{
             inv.setItem(collectionSlots[a++], collectionList.get(i));
         }
 
+        ItemStack glass = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+        ItemMeta glassMeta = glass.getItemMeta();
+        glassMeta.setDisplayName("");
+        glass.setItemMeta(glassMeta);
+
         ItemStack next = new ItemStack(Material.ARROW);
         ItemMeta nextMeta = next.getItemMeta();
         nextMeta.setDisplayName(ChatColor.GREEN + "下一頁");
@@ -45,6 +51,10 @@ public class BackPack extends PluginInventory{
         ItemMeta previousMeta = previous.getItemMeta();
         previousMeta.setDisplayName(ChatColor.GREEN + "上一頁");
         previous.setItemMeta(previousMeta);
+
+        for (int glassSlot : glassSlots) {
+            inv.setItem(glassSlot, glass);
+        }
 
         inv.setItem(45, page > 1 ? previous : null);
         inv.setItem(53, max >= collectionList.size() ? null : next);

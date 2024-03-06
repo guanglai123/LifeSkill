@@ -43,7 +43,7 @@ public class CollectListener implements Listener {
                     if (finalTask == null) {
                         actionbarMap.put(p.getUniqueId(), System.currentTimeMillis());
                         finalTask = scheduler.runTaskLater(LifeSkill.instance, () -> {
-                            p.sendMessage("採集成功");
+                            p.sendMessage( ChatColor.GREEN + "你成功採集到 " + ChatColor.RESET + LifeSkill.getMMO(position.type(), position.id()).getItemMeta().getDisplayName());
                             LifeSkill.instance.getUserDataManager().incPlayerCollection(p, position.type(), position.id(), position.amount());
                             LifeSkill.instance.getUserDataManager().setPlayerCoolDown(p, position.location(), System.currentTimeMillis());
                         }, time / 1000 * 20);
@@ -63,14 +63,14 @@ public class CollectListener implements Listener {
                         if (finalTask != null && scheduler.isQueued(finalTask.getTaskId())) {
                             scheduler.cancelTask(finalTask.getTaskId());
                             scheduler.cancelTask(actionBarTask.getTaskId());
-                            p.sendMessage("取消採集");
+                            p.sendMessage(ChatColor.GRAY + "取消採集");
                         }
                         finalTask = null;
                         scheduler.cancelTask(actionBarTask.getTaskId());
                         p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(""));
                     }, 6L);
                 } else {
-                    p.sendMessage("還需要" + (position.coolDown() - (System.currentTimeMillis() - LifeSkill.instance.getUserDataManager().getPlayerCoolDown(p, position.location()))) / 1000 + "秒");
+                    p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("還需要" + (position.coolDown() - (System.currentTimeMillis() - LifeSkill.instance.getUserDataManager().getPlayerCoolDown(p, position.location()))) / 1000 + "秒"));
                 }
             }
         }

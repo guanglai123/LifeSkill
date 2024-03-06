@@ -22,82 +22,60 @@ public class UserDataManager {
 
     private final File USERDATA_DIR = new File(PLUGIN_DIR, "userdata");
 
-    public void setPlayerCoolDown(Player player, Location location, Long coolDown) {
-        if (USERDATA_DIR.exists()) {
-            try {
-                checkPlayerData(player);
-                File playerData = new File(USERDATA_DIR, player.getUniqueId() + ".yml");
-                FileConfiguration playerFile = YamlConfiguration.loadConfiguration(playerData);
-                ConfigurationSection coolDowns = playerFile.getConfigurationSection("cool-downs");
-                boolean hasCoolDown = false;
-                for (String key : coolDowns.getKeys(false)) {
-                    ConfigurationSection collection = coolDowns.getConfigurationSection(key);
-                    if (collection.get("location").equals(location)) {
-                        collection.set("cool-down", coolDown);
-                        hasCoolDown = true;
-                        break;
-                    }
-                }
-                if (!hasCoolDown) {
-                    int number = coolDowns.getKeys(false).size() + 1;
-                    coolDowns.createSection(String.valueOf(number));
-                    ConfigurationSection collection = coolDowns.getConfigurationSection(String.valueOf(number));
-                    collection.set("location", location);
-                    collection.set("cool-down", coolDown);
-                }
-                playerFile.save(playerData);
-            } catch (IOException e) {
-                player.sendMessage(ChatColor.RED + "更新玩家數據失敗");
-            }
-        } else {
-            player.sendMessage(ChatColor.RED + "玩家數據資料夾不存在");
-        }
-    }
-
     public void incPlayerCollection(Player player, String type, String id, int amount) {
-        if (USERDATA_DIR.exists()) {
-            try {
-                checkPlayerData(player);
-                File playerData = new File(USERDATA_DIR, player.getUniqueId() + ".yml");
-                FileConfiguration playerFile = YamlConfiguration.loadConfiguration(playerData);
-                ConfigurationSection collections = playerFile.getConfigurationSection("collections");
-                boolean hasCollection = false;
-                for (String key : collections.getKeys(false)) {
-                    ConfigurationSection collection = collections.getConfigurationSection(key);
-                    if (collection.getString("type").equals(type) && collection.getString("id").equals(id)) {
-                        collection.set("amount", collection.getInt("amount") + amount);
-                        hasCollection = true;
-                        break;
-                    }
+        try {
+            checkPlayerData(player);
+            File playerData = new File(USERDATA_DIR, player.getUniqueId() + ".yml");
+            FileConfiguration playerFile = YamlConfiguration.loadConfiguration(playerData);
+            ConfigurationSection collections = playerFile.getConfigurationSection("collections");
+            boolean hasCollection = false;
+            for (String key : collections.getKeys(false)) {
+                ConfigurationSection collection = collections.getConfigurationSection(key);
+                if (collection.getString("type").equals(type) && collection.getString("id").equals(id)) {
+                    collection.set("amount", collection.getInt("amount") + amount);
+                    hasCollection = true;
+                    break;
                 }
-                if (!hasCollection) {
-                    int number = collections.getKeys(false).size() + 1;
-                    collections.createSection(String.valueOf(number));
-                    ConfigurationSection collection = collections.getConfigurationSection(String.valueOf(number));
-                    collection.set("type", type);
-                    collection.set("id", id);
-                    collection.set("amount", amount);
-                }
-                playerFile.save(playerData);
-            } catch (IOException e) {
-                player.sendMessage(ChatColor.RED + "更新玩家數據失敗");
             }
-        } else {
-            player.sendMessage(ChatColor.RED + "玩家數據資料夾不存在");
+            if (!hasCollection) {
+                String s = String.valueOf(collections.getKeys(false).size() + 1);
+                collections.createSection(s);
+                ConfigurationSection collection = collections.getConfigurationSection(s);
+                collection.set("type", type);
+                collection.set("id", id);
+                collection.set("amount", amount);
+            }
+            playerFile.save(playerData);
+        } catch (IOException e) {
+            System.out.println(ChatColor.RED + "更新玩家素材失敗");
         }
     }
 
-    private void checkPlayerData(Player player) {
-        File playerData = new File(USERDATA_DIR, player.getUniqueId() + ".yml");
+    public void setPlayerCoolDown(Player player, Location location, Long coolDown) {
         try {
-            if (playerData.createNewFile()) {
-                FileConfiguration playerFile = YamlConfiguration.loadConfiguration(playerData);
-                playerFile.createSection("collections");
-                playerFile.createSection("cool-downs");
-                playerFile.save(playerData);
+            checkPlayerData(player);
+            File playerData = new File(USERDATA_DIR, player.getUniqueId() + ".yml");
+            FileConfiguration playerFile = YamlConfiguration.loadConfiguration(playerData);
+            ConfigurationSection coolDowns = playerFile.getConfigurationSection("cool-downs");
+            boolean hasCoolDown = false;
+            for (String key : coolDowns.getKeys(false)) {
+                ConfigurationSection collection = coolDowns.getConfigurationSection(key);
+                if (collection.get("location").equals(location)) {
+                    collection.set("cool-down", coolDown);
+                    hasCoolDown = true;
+                    break;
+                }
             }
+            if (!hasCoolDown) {
+                String s = String.valueOf(coolDowns.getKeys(false).size() + 1);
+                coolDowns.createSection(s);
+                ConfigurationSection collection = coolDowns.getConfigurationSection(s);
+                collection.set("location", location);
+                collection.set("cool-down", coolDown);
+            }
+            playerFile.save(playerData);
         } catch (IOException e) {
-            player.sendMessage(ChatColor.RED + "創建玩家數據失敗");
+            System.out.println(ChatColor.RED + "更新玩家冷卻時間失敗");
         }
     }
 
@@ -112,7 +90,7 @@ public class UserDataManager {
                 ItemStack is = LifeSkill.getMMO(collection.getString("type"), collection.getString("id"));
                 ItemMeta im = is.getItemMeta();
                 List<String> lore = im.getLore();
-                lore.add("數量: " + collection.getInt("amount"));
+                lore.add(ChatColor.GOLD + "數量: " + ChatColor.YELLOW + collection.getInt("amount") + " 個");
                 im.setLore(lore);
                 is.setItemMeta(im);
                 collectionList.add(is);
@@ -136,5 +114,23 @@ public class UserDataManager {
             }
         }
         return 0L;
+    }
+
+    private void checkPlayerData(Player player) {
+        if (USERDATA_DIR.exists()) {
+            File playerData = new File(USERDATA_DIR, player.getUniqueId() + ".yml");
+            try {
+                if (playerData.createNewFile()) {
+                    FileConfiguration playerFile = YamlConfiguration.loadConfiguration(playerData);
+                    playerFile.createSection("collections");
+                    playerFile.createSection("cool-downs");
+                    playerFile.save(playerData);
+                }
+            } catch (IOException e) {
+                System.out.println(ChatColor.RED + "建立新玩家數據失敗");
+            }
+        } else {
+            System.out.println(ChatColor.RED + "玩家數據資料夾不存在");
+        }
     }
 }

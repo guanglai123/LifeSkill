@@ -5,6 +5,6 @@
   z: 0
   type: MATERIAL
   id: STEEL_INGOT
-  amount: 5
+  amount: 1
   time: 5000
-  cool-down: 10000
+  cool-down: 50000
