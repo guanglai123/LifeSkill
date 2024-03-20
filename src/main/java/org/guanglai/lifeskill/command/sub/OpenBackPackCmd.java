@@ -8,7 +8,7 @@ import org.guanglai.lifeskill.gui.BackPack;
 import java.util.Collections;
 import java.util.List;
 
-public class OpenBackPackCmd extends SubCommand{
+public class OpenBackPackCmd extends SubCommand {
 
     @Override
     public boolean onCommand(CommandSender sender, String[] args) {

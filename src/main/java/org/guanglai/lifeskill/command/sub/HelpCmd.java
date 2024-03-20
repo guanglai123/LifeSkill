@@ -7,7 +7,7 @@ import org.guanglai.lifeskill.command.CommandManager;
 import java.util.Collections;
 import java.util.List;
 
-public class HelpCmd extends SubCommand{
+public class HelpCmd extends SubCommand {
 
     @Override
     public boolean onCommand(CommandSender sender, String[] args) {
