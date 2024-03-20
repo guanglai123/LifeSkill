@@ -1,5 +1,0 @@
-#顯示採集時的動畫，你可以選擇
-#COUNTDOWN
-#PROGRESS
-#NONE
-collection-action-bar: COUNTDOWN
